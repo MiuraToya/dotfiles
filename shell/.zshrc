@@ -1,3 +1,6 @@
+# Claude Code (native installer 配置先, macOSでは自動追加されないため明示)
+export PATH="$HOME/.local/bin:$PATH"
+
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"

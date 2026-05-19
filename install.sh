@@ -49,7 +49,10 @@ stow shell git editor
 # 6. Set global git hooks path so pre-commit gitleaks runs in every repo
 git config --global core.hooksPath ~/.config/git/hooks
 
-# 7. macOS defaults
+# 7. ベンダー公式 CLI ツール (Claude Code 等)
+./macos/install-cli.sh
+
+# 8. macOS defaults
 ./macos/defaults.sh
 
-echo "✅ セットアップ完了"
+echo "✓ セットアップ完了"
