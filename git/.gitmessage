@@ -1,0 +1,12 @@
+# <type>(<scope>): <subject>
+#
+# <body>
+#
+# <footer>
+#
+# --- ガイド ---
+# type:    feat | fix | docs | style | refactor | perf | test | chore
+# scope:   省略可、影響範囲（例: shell, git, editor）
+# subject: 命令形・現在形・50文字以内・末尾ピリオドなし
+# body:    なぜ変更したか（何を変えたかではなく）を 72文字で折り返して記述
+# footer:  Refs #N | Closes #N | BREAKING CHANGE: ...

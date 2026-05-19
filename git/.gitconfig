@@ -1,0 +1,9 @@
+[user]
+	name = MiuraToya
+[alias]
+	cleanup = !git fetch -p && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D 2>/dev/null; true
+	sync = !git switch main && git pull && git switch - && git rebase main
+[commit]
+	template = ~/.gitmessage
+[include]
+	path = ~/.gitconfig.local
