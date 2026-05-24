@@ -11,6 +11,7 @@
 ├── editor/             # エディタ設定
 ├── homebrew/Brewfile   # CLI / GUI アプリ宣言リスト
 ├── macos/defaults.sh   # OS 設定スクリプト
+├── claude-sandbox/     # Claude Code を bypass モードで隔離起動する Docker 一式
 └── install.sh          # 1コマンドで全部セットアップ
 ```
 
@@ -47,6 +48,20 @@ rm ~/.zshrc ~/.zprofile ~/.gitconfig
 - **zsh 前提**: `install.sh` は zsh 以外のシェルで警告を出します。`chsh -s $(command -v zsh)` で切り替え推奨
 - **public repo**: 秘密情報は commit しない。machine-local な email は `~/.gitconfig.local`（`[include]` で `.gitconfig` から参照）に分離済み
 - **gitleaks pre-commit**: セットアップ後は全 git repo の commit 前に gitleaks スキャンが自動実行されます。検知時に意図的に override したい場合は `git commit --no-verify`
+
+## Claude Code サンドボックス
+
+`--dangerously-skip-permissions`(bypass モード)をホスト直叩きするのは危険なので、
+Docker コンテナに隔離して動かす一式が `claude-sandbox/` にあります。任意のリポのルートで
+起動すると、そのリポだけが `/workspace` にマウントされる(他のリポやホストの鍵類は見えない)。
+
+```bash
+# `claude-box` エイリアスは shell/.zshrc 済み。任意のリポのルートで:
+claude-box                  # そのリポをマウントして bypass モード起動
+ENABLE_FIREWALL=1 claude-box  # 通信も Anthropic / GitHub / npm に制限
+```
+
+要 Docker Desktop。設計と「ホストと共有する/しない」の判断根拠は `claude-sandbox/README.md` 参照。
 
 ## Machine-Local Config
 

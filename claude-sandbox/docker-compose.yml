@@ -1,0 +1,50 @@
+services:
+  claude:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        TZ: ${TZ:-Asia/Tokyo}
+    image: claude-sandbox:latest
+
+    # ファイアウォール(init-firewall.sh)で iptables を操作するために必要。
+    # ENABLE_FIREWALL=0(既定)で使うなら、この cap_add は丸ごと削除してよい。
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+
+    init: true # PID 1 を初期化し、ゾンビプロセス/シグナルを正しく処理する
+
+    # 暴走プロセスや fork bomb の被害をコンテナ内に抑えるためのリソース上限。
+    mem_limit: 4g
+    memswap_limit: 4g
+    pids_limit: 1024
+    cpus: 4
+
+    environment:
+      # ホスト環境に ANTHROPIC_API_KEY があれば渡す(無ければ初回 `claude` でログイン)。
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - TZ=${TZ:-Asia/Tokyo}
+      # 1 にすると起動時に egress 許可リストを適用する。
+      - ENABLE_FIREWALL=${ENABLE_FIREWALL:-0}
+
+    volumes:
+      # === ホストと共有するもの ===
+      # マウントするリポ = "意図した影響範囲(blast radius)"。read-write。
+      # SANDBOX_WORKDIR は run.sh が「実行したリポのルート」を入れる。
+      # (直接 docker compose を叩くと既定で .. = このフォルダの親になる)
+      - ${SANDBOX_WORKDIR:-..}:/workspace:rw
+      # git のコミット作者情報。read-only(改ざんさせない / 余計な情報は渡さない)。
+      - ${HOME}/.gitconfig:/home/node/.gitconfig:ro
+
+      # === コンテナ内に閉じるもの(名前付きボリューム = ホスト FS に出さない) ===
+      # Claude のログイン情報/設定。ホストの ~/.claude とは隔離して永続化する。
+      # (全リポ共通。一度ログインすればどのリポから起動しても使い回せる)
+      - claude-config:/home/node/.claude
+
+    working_dir: /workspace
+    stdin_open: true # docker run -i 相当
+    tty: true        # docker run -t 相当
+
+volumes:
+  claude-config:
