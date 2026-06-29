@@ -4,7 +4,7 @@
 # Deployed globally via `git config --global core.hooksPath ~/.config/git/hooks`.
 #
 if command -v gitleaks &>/dev/null; then
-    gitleaks protect --staged --redact || {
+    gitleaks git --staged --redact || {
         echo ""
         echo "❌ gitleaks が秘密情報を検知 — commit を中止しました"
         echo "   秘密情報を削除するか、上書きで commit したい場合: git commit --no-verify"

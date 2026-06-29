@@ -47,7 +47,7 @@ rm ~/.zshrc ~/.zprofile ~/.gitconfig
 
 - **zsh 前提**: `install.sh` は zsh 以外のシェルで警告を出します。`chsh -s $(command -v zsh)` で切り替え推奨
 - **public repo**: 秘密情報は commit しない。machine-local な email は `~/.gitconfig.local`（`[include]` で `.gitconfig` から参照）に分離済み
-- **gitleaks pre-commit**: セットアップ後は全 git repo の commit 前に gitleaks スキャンが自動実行されます。検知時に意図的に override したい場合は `git commit --no-verify`
+- **gitleaks pre-commit**: セットアップ後は全 git repo の commit 前に staged された差分を gitleaks でスキャンします。検知時に意図的に override したい場合は `git commit --no-verify`
 
 ## Claude Code サンドボックス
 

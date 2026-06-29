@@ -6,6 +6,7 @@ set -euo pipefail
 defaults write -g com.apple.mouse.scaling      -float 1.5
 defaults write -g com.apple.trackpad.scaling   -float 1.5
 defaults write -g com.apple.scrollwheel.scaling -float 0.4412
+defaults write -g com.apple.swipescrolldirection -bool false
 
 # === Dock ===
 defaults write com.apple.dock autohide      -bool true
