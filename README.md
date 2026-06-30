@@ -1,14 +1,12 @@
 # dotfiles
 
-個人用 dotfiles repo。GNU Stow + Homebrew + macOS defaults で Mac 環境を宣言的に管理。
+個人用 dotfiles repo。chezmoi + Homebrew + macOS defaults で Mac 環境を宣言的に管理。
 
 ## Structure
 
 ```
 .
-├── shell/              # zsh 設定
-├── git/                # git 設定
-├── editor/             # エディタ設定
+├── chezmoi/            # ~/ 配下へ反映する dotfiles
 ├── homebrew/Brewfile   # CLI / GUI アプリ宣言リスト
 ├── macos/defaults.sh   # OS 設定スクリプト
 ├── claude-sandbox/     # Claude Code を bypass モードで隔離起動する Docker 一式
@@ -16,6 +14,13 @@
 ```
 
 ## Setup (Fresh Mac)
+
+`install.sh` は repo 内にあるため、最初だけ Git が必要です。Xcode Command Line Tools を手動で入れて Apple Git を使える状態にします。
+
+```bash
+xcode-select --install
+git --version
+```
 
 ```bash
 git clone https://github.com/MiuraToya/dotfiles.git ~/Develop/Project/dotfiles
@@ -25,23 +30,43 @@ cd ~/Develop/Project/dotfiles
 
 `install.sh` が以下を順に実行：
 
-1. Xcode Command Line Tools のインストール
+1. Xcode Command Line Tools が入っていることを確認
 2. Homebrew のインストール
 3. `brew bundle --file=homebrew/Brewfile` でツール一括インストール
 4. `~/.gitconfig.local` を対話的に作成（git で使う email を入力）
-5. `stow shell git editor` で `~` 配下に symlink 展開
+5. `chezmoi apply --source=./chezmoi` で `~` 配下に通常ファイルとして反映
 6. `git config --global core.hooksPath ~/.config/git/hooks` で全 repo に gitleaks pre-commit 有効化
-7. `macos/defaults.sh` で Mac OS 設定適用
+7. `macos/install-cli.sh` でベンダー公式 CLI ツールをインストール
+8. `macos/defaults.sh` で Mac OS 設定適用
 
 ## Conflicts with Existing Files
 
-`~/.zshrc` / `~/.zprofile` / `~/.gitconfig` が **通常ファイルとして既に存在する** Mac では、`stow` が衝突エラーで失敗します。事前に削除してから `install.sh` を実行してください：
+`chezmoi` は symlink ではなく通常ファイルとして `~` 配下へ反映します。既存ファイルとの差分を確認してから反映したい場合は、先に以下を実行してください：
 
 ```bash
-rm ~/.zshrc ~/.zprofile ~/.gitconfig
+./scripts/check.sh
+chezmoi diff --source=./chezmoi
 ```
 
-（中身は repo の `shell/` と `git/` に保持されているので失われません）
+差分に問題なければ `./install.sh` を実行します。
+`install.sh` も `chezmoi diff` を表示し、確認してから `chezmoi apply` します。
+
+## Daily Usage
+
+普段の設定変更は `chezmoi/` 配下を正として編集します。`~/.zshrc` など `~` 配下のファイルを直接編集した場合は、同じ変更を `chezmoi/` 側にも戻してください。
+
+```bash
+# 反映予定の差分を見る
+chezmoi diff --source=./chezmoi
+
+# HOME配下へ反映する
+chezmoi apply --source=./chezmoi
+
+# install.shほど重くない安全確認
+./scripts/check.sh
+```
+
+`install.sh` は初回セットアップや Brewfile / macOS defaults までまとめて適用したいときに使います。日々の dotfiles 反映だけなら `chezmoi apply --source=./chezmoi` で十分です。
 
 ## Notes
 
@@ -56,9 +81,9 @@ Docker コンテナに隔離して動かす一式が `claude-sandbox/` にあり
 起動すると、そのリポだけが `/workspace` にマウントされる(他のリポやホストの鍵類は見えない)。
 
 ```bash
-# `claude-box` エイリアスは shell/.zshrc 済み。任意のリポのルートで:
-claude-box                  # そのリポをマウントして bypass モード起動
-ENABLE_FIREWALL=1 claude-box  # 通信も Anthropic / GitHub / npm に制限
+# 任意のリポのルートで:
+/path/to/dotfiles/claude-sandbox/run.sh
+ENABLE_FIREWALL=1 /path/to/dotfiles/claude-sandbox/run.sh
 ```
 
 要 Docker Desktop。設計と「ホストと共有する/しない」の判断根拠は `claude-sandbox/README.md` 参照。

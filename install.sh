@@ -2,11 +2,8 @@
 #
 # Bootstrap script for setting up a Mac from this dotfiles repo.
 #
-# NOTE: If running on a Mac that already has ~/.zshrc, ~/.zprofile, or ~/.gitconfig
-#       as regular files, `stow` will fail at step 5 with a conflict error.
-#       Manually remove the conflicting files first:
-#           rm ~/.zshrc ~/.zprofile ~/.gitconfig
-#       (Their content is already preserved in this repo under shell/ and git/.)
+# NOTE: dotfiles under ~/ are managed by chezmoi from ./chezmoi.
+#       Run `scripts/check.sh` first if you want to review changes before applying.
 #
 set -euo pipefail
 
@@ -43,8 +40,12 @@ EOF
     echo "~/.gitconfig.local を作成しました"
 fi
 
-# 5. Stow packages
-stow shell git editor
+# 5. Dotfiles
+echo "==> chezmoi diff"
+chezmoi diff --source="$DOTFILES_DIR/chezmoi" || true
+read -rp "上記のdotfiles差分を反映しますか？ (y/N) " APPLY_DOTFILES
+[[ "$APPLY_DOTFILES" =~ ^[Yy] ]] || { echo "中止しました"; exit 1; }
+chezmoi apply --source="$DOTFILES_DIR/chezmoi"
 
 # 6. Set global git hooks path so pre-commit gitleaks runs in every repo
 git config --global core.hooksPath ~/.config/git/hooks

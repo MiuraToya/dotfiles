@@ -1,0 +1,60 @@
+# テーマ: OSのライト/ダークモードに合わせて切り替える
+theme = light:Horizon Bright,dark:Broadcast
+
+# フォント: JetBrains Mono Nerd Fontを使う
+font-family = JetBrainsMono NFM Regular
+font-size = 15
+
+# 背景: 半透明 + 背景ぼかし
+background-opacity = 0.6
+background-blur = 10
+
+# ウィンドウ余白: 端に文字が詰まりすぎないようにする
+window-padding-x = 10
+window-padding-y = 10
+window-padding-balance = true
+
+# ウィンドウ外観: macOSの装飾を出し、タイトルバーは透明にする
+window-decoration = true
+macos-titlebar-style = transparent
+
+# ウィンドウ状態: 終了時のウィンドウ状態を復元する
+window-save-state = always
+
+# 色空間: display-p3で広色域表示にする
+window-colorspace = display-p3
+
+# カーソル: ブロック型で点滅なし
+cursor-style = block
+cursor-style-blink = false
+
+# Shell integration: Ghostty側でカーソル制御しない
+shell-integration-features = no-cursor
+
+# 行の高さ: セル高を広げて読みやすくする
+adjust-cell-height = 30%
+
+# スクロール: マウスホイールのスクロール量を増やす
+mouse-scroll-multiplier = 2
+
+# コピー: 選択したテキストを自動でクリップボードへコピーする
+copy-on-select = clipboard
+
+# 分割: cmd+enterで下、cmd+shift+enterで右に分割する
+keybind = cmd+enter=new_split:down
+keybind = cmd+shift+enter=new_split:right
+
+# 分割移動: cmd+矢印で隣のsplitへ移動する
+keybind = cmd+left=goto_split:left
+keybind = cmd+right=goto_split:right
+keybind = cmd+up=goto_split:top
+keybind = cmd+down=goto_split:bottom
+
+# 分割サイズ変更: cmd+shift+矢印でsplitサイズを20ずつ変更する
+keybind = cmd+shift+left=resize_split:left,20
+keybind = cmd+shift+right=resize_split:right,20
+keybind = cmd+shift+up=resize_split:up,20
+keybind = cmd+shift+down=resize_split:down,20
+
+# 閉じる: cmd+wで現在のsurfaceを閉じる
+keybind = cmd+w=close_surface

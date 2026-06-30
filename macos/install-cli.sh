@@ -6,5 +6,5 @@
 set -euo pipefail
 
 # Claude Code (native installer, ~/.local/bin/claude に配置)
-# macOSでは PATH 自動追加されないので shell/.zshrc 側で対応済み
+# macOSでは PATH 自動追加されないので chezmoi/dot_zshrc 側で対応済み
 command -v claude &>/dev/null || curl -fsSL https://claude.ai/install.sh | bash
