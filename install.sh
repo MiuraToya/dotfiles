@@ -27,6 +27,13 @@ xcode-select -p &>/dev/null || xcode-select --install
 command -v brew &>/dev/null || \
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
+# Homebrew installer does not update PATH in the current shell.
+if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+
 # 3. Brewfile
 brew bundle --file=homebrew/Brewfile
 
